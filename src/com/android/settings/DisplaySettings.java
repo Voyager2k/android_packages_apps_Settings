@@ -91,10 +91,9 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private WifiDisplayStatus mWifiDisplayStatus;
     private Preference mWifiDisplayPreference;
 
-    private CheckBoxPreference mAdaptiveBacklight;
-    private int mAllowedRotationModes;
-    
     private boolean mIsCrtOffChecked = false;
+
+    private CheckBoxPreference mAdaptiveBacklight;
 
     private final RotationPolicy.RotationPolicyListener mRotationPolicyListener =
             new RotationPolicy.RotationPolicyListener() {
@@ -104,12 +103,16 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         }
     };
 
+    private Context mContext;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ContentResolver resolver = getActivity().getContentResolver();
 
         addPreferencesFromResource(R.xml.display_settings);
+        PreferenceScreen prefSet = getPreferenceScreen();
+        mContext = getActivity();
 
         mAccelerometer = (CheckBoxPreference) findPreference(KEY_ACCELEROMETER);
         mAccelerometer.setPersistent(false);
@@ -397,13 +400,13 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         if (preference == mAccelerometer) {
             RotationPolicy.setRotationLockForAccessibility(
                     getActivity(), !mAccelerometer.isChecked());
+        } else if (preference == mAdaptiveBacklight) {
+            return AdaptiveBacklight.setEnabled(mAdaptiveBacklight.isChecked());
         } else if (preference == mCrtOff) {
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.SYSTEM_POWER_ENABLE_CRT_OFF,
                     mCrtOff.isChecked() ? 1 : 0);
             return true;
-        } else if (preference == mAdaptiveBacklight) {
-            return AdaptiveBacklight.setEnabled(mAdaptiveBacklight.isChecked());
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
