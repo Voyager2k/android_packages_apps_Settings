@@ -575,4 +575,8 @@
     <!-- Swap volume buttons when the screen is rotated -->
     <string name="swap_volume_buttons_title">Reorient volume buttons</string>
     <string name="swap_volume_buttons_summary">Swap volume buttons when the screen is rotated</string>
+
+    <!-- Performance Settings -->
+    <string name="performance_title">Performance Control</string>
+
 </resources>
