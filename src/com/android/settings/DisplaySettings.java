@@ -208,9 +208,12 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
                     if (currentTimeout >= timeout) {
                         best = i;
                     }
-                }
-                summary = preference.getContext().getString(R.string.screen_timeout_summary,
+                } if (currentTimeout > 1800000) {
+                      summary = preference.getContext().getString(R.string.screen_timeout_summary_never);
+                } else {
+                    summary = preference.getContext().getString(R.string.screen_timeout_summary,
                         entries[best]);
+                }
             }
         }
         preference.setSummary(summary);
