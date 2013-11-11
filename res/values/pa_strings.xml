@@ -579,4 +579,8 @@
     <!-- Performance Settings -->
     <string name="performance_title">Performance Control</string>
 
+    <!--- Lock clock -->
+    <string name="lock_clock_title">Clock widget</string>
+    <string name="lock_clock_summary">View or change how the \'cLock\' Home and Lock screen widgets will display</string>
+
 </resources>
