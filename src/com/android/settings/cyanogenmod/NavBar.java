@@ -53,7 +53,6 @@ public class NavBar extends Fragment {
         setHasOptionsMenu(true);
         mContainer = container;
         mActivity = getActivity();
-        mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         return view;
     }
 
