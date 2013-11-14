@@ -47,6 +47,8 @@ import com.android.settings.Utils;
 
 import java.util.Date;
 
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
+
 public class Toolbar extends SettingsPreferenceFragment
         implements Preference.OnPreferenceChangeListener {
 
@@ -66,6 +68,11 @@ public class Toolbar extends SettingsPreferenceFragment
     private static final String PREF_CLOCK_DATE_DISPLAY = "clock_date_display";
     private static final String PREF_CLOCK_DATE_STYLE = "clock_date_style";
     private static final String PREF_CLOCK_DATE_FORMAT = "clock_date_format";
+    private static final String PREF_BATT_BAR = "battery_bar_list";
+    private static final String PREF_BATT_BAR_STYLE = "battery_bar_style";
+    private static final String PREF_BATT_BAR_COLOR = "battery_bar_color";
+    private static final String PREF_BATT_BAR_WIDTH = "battery_bar_thickness";
+    private static final String PREF_BATT_ANIMATE = "battery_bar_animate";
 
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
     public static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
@@ -89,8 +96,15 @@ public class Toolbar extends SettingsPreferenceFragment
     private ListPreference mClockDateDisplay;
     private ListPreference mClockDateStyle;
     private ListPreference mClockDateFormat;
+    private ListPreference mBatteryIcon;
+    private ListPreference mBatteryBar;
+    private ListPreference mBatteryBarStyle;
+    private ListPreference mBatteryBarThickness;
+    private CheckBoxPreference mBatteryBarChargingAnimation;
+    private ColorPickerPreference mBatteryBarColor;
 
     private Context mContext;
+    protected ContentResolver mContentRes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +114,7 @@ public class Toolbar extends SettingsPreferenceFragment
         PreferenceScreen prefSet = getPreferenceScreen();
 
         mContext = getActivity();
+        mContentRes = getActivity().getContentResolver();
 
         mQuickPullDown = (CheckBoxPreference) prefSet.findPreference(KEY_QUICK_PULL_DOWN);
         mQuickPullDown.setChecked(Settings.System.getInt(mContext.getContentResolver(),
@@ -143,11 +158,40 @@ public class Toolbar extends SettingsPreferenceFragment
         mCircleBattery.setChecked(Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_CIRCLE_BATTERY, 0) == 1);
 
+        mBatteryBar = (ListPreference) prefSet.findPreference(PREF_BATT_BAR);
+        mBatteryBar.setOnPreferenceChangeListener(this);
+        mBatteryBar.setValue(Integer.toString(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_BATTERY_BAR, 0)));
+
+        mBatteryBarStyle = (ListPreference) findPreference(PREF_BATT_BAR_STYLE);
+        mBatteryBarStyle.setOnPreferenceChangeListener(this);
+        mBatteryBarStyle.setValue((Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_BATTERY_BAR_STYLE, 0)) + "");
+
         mStatusBarMaxNotif = (ListPreference) prefSet.findPreference(STATUS_BAR_MAX_NOTIF);
         int maxNotIcons = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.MAX_NOTIFICATION_ICONS, 2);
         mStatusBarMaxNotif.setValue(String.valueOf(maxNotIcons));
         mStatusBarMaxNotif.setOnPreferenceChangeListener(this);
+
+        mBatteryBarColor = (ColorPickerPreference) findPreference(PREF_BATT_BAR_COLOR);
+        mBatteryBarColor.setOnPreferenceChangeListener(this);
+
+        mBatteryBarChargingAnimation = (CheckBoxPreference) findPreference(PREF_BATT_ANIMATE);
+        mBatteryBarChargingAnimation.setChecked(Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE, false));
+
+        mBatteryBarThickness = (ListPreference) findPreference(PREF_BATT_BAR_WIDTH);
+        mBatteryBarThickness.setOnPreferenceChangeListener(this);
+        mBatteryBarThickness.setValue((Settings.System.getInt(mContentRes,
+                Settings.System.STATUSBAR_BATTERY_BAR_THICKNESS, 1)) + "");
+
+        if (Integer.parseInt(mBatteryBar.getValue()) == 0) {
+            mBatteryBarStyle.setEnabled(false);
+            mBatteryBarColor.setEnabled(false);
+            mBatteryBarChargingAnimation.setEnabled(false);
+            mBatteryBarThickness.setEnabled(false);
+        }
 
         mNavigationCategory = (PreferenceCategory) prefSet.findPreference(NAV_BAR_CATEGORY);
 
@@ -196,6 +240,12 @@ public class Toolbar extends SettingsPreferenceFragment
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.STATUS_BAR_CIRCLE_BATTERY, mCircleBattery.isChecked()
                     ? 1 : 0);
+        } else if (preference == mBatteryBarChargingAnimation) {
+
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE,
+                    mBatteryBarChargingAnimation.isChecked() ? 1 : 0);
+            return true;
         } else if (preference == mQuickPullDown) {
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.QS_QUICK_PULLDOWN, mQuickPullDown.isChecked()
@@ -313,6 +363,46 @@ public class Toolbar extends SettingsPreferenceFragment
             Settings.System.putInt(getActivity().getContentResolver(),
                     Settings.System.MAX_NOTIFICATION_ICONS, maxNotIcons);
             return true;
+        } else if (preference == mBatteryBarColor) {
+            String hex = ColorPickerPreference.convertToARGB(Integer
+                    .valueOf(String.valueOf(newValue)));
+            preference.setSummary(hex);
+
+            int intHex = ColorPickerPreference.convertToColorInt(hex);
+            Settings.System.putInt(mContentRes,
+                    Settings.System.STATUSBAR_BATTERY_BAR_COLOR, intHex);
+            return true;
+
+        } else if (preference == mBatteryBar) {
+
+            int val = Integer.parseInt((String) newValue);
+            Settings.System.putInt(mContentRes,
+                    Settings.System.STATUSBAR_BATTERY_BAR, val);
+            if (val == 0) {
+                mBatteryBarStyle.setEnabled(false);
+                mBatteryBarColor.setEnabled(false);
+                mBatteryBarChargingAnimation.setEnabled(false);
+                mBatteryBarThickness.setEnabled(false);
+            } else {
+                mBatteryBarStyle.setEnabled(true);
+                mBatteryBarColor.setEnabled(true);
+                mBatteryBarChargingAnimation.setEnabled(true);
+                mBatteryBarThickness.setEnabled(true);
+            }
+            return true;
+
+        } else if (preference == mBatteryBarStyle) {
+
+            int val = Integer.parseInt((String) newValue);
+            return Settings.System.putInt(mContentRes,
+                    Settings.System.STATUSBAR_BATTERY_BAR_STYLE, val);
+
+        } else if (preference == mBatteryBarThickness) {
+
+            int val = Integer.parseInt((String) newValue);
+            return Settings.System.putInt(mContentRes,
+                    Settings.System.STATUSBAR_BATTERY_BAR_THICKNESS, val);
+
         }
         return false;
     }
