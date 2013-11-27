@@ -230,6 +230,8 @@ public class Toolbar extends SettingsPreferenceFragment
             if(!Utils.hasNavigationBar()) {
                 prefSet.removePreference(mNavigationCategory);
             }
+        } if (!Utils.isPhone()) {
+                mStatusCategory.removePreference(mQuickPullDown);
         } else {
             mNavigationCategory.removePreference(mNavigationBarControls);
             mStatusCategory.removePreference(mQuickPullDown);
