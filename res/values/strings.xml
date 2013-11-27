@@ -4632,6 +4632,13 @@
     <string name="battery_bar_animate_title">Enable charging animation</string>
     <string name="battery_bar_animate_summary">Enabling the charging animation may result in a poor user experience. Enable at your own discretion.</string>
 
+    <!-- Battery styles -->
+    <string name="icon_only">Icon</string>
+    <string name="text_only">Small Icon with Text</string>
+    <string name="icon_with_text">Circle</string>
+    <string name="icon_with_centered_text">Circle with Percent</string>
+    <string name="circlemod">AOKP CircleMOD</string>
+
     <!-- Color Picker -->
     <string name="dialog_color_picker">Color Picker</string>
     <string name="press_color_to_apply">Press on Color to apply</string>

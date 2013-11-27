@@ -1532,4 +1532,22 @@
         <item>4</item>
     </string-array>
 
+    <!-- Battery styles -->
+    <string-array name="battery_icon_entries" translatable="false">
+        <item>Don\'t Show</item>
+        <item>@string/icon_only</item>
+        <item>@string/text_only</item>
+        <item>@string/icon_with_text</item>
+        <item>@string/icon_with_centered_text</item>
+        <item>@string/circlemod</item>
+    </string-array>
+    <string-array name="battery_icon_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
 </resources>

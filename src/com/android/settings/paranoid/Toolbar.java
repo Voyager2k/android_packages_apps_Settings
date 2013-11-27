@@ -73,6 +73,7 @@ public class Toolbar extends SettingsPreferenceFragment
     private static final String PREF_BATT_BAR_COLOR = "battery_bar_color";
     private static final String PREF_BATT_BAR_WIDTH = "battery_bar_thickness";
     private static final String PREF_BATT_ANIMATE = "battery_bar_animate";
+    private static final String PREF_BATT_ICON = "battery_icon_list";
 
     public static final int CLOCK_DATE_STYLE_LOWERCASE = 1;
     public static final int CLOCK_DATE_STYLE_UPPERCASE = 2;
@@ -154,9 +155,10 @@ public class Toolbar extends SettingsPreferenceFragment
 
         parseClockDateFormats();
 
-        mCircleBattery = (CheckBoxPreference) prefSet.findPreference(KEY_CIRCLE_BATTERY);
-        mCircleBattery.setChecked(Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.STATUS_BAR_CIRCLE_BATTERY, 0) == 1);
+        mBatteryIcon = (ListPreference) prefSet.findPreference(PREF_BATT_ICON);
+        mBatteryIcon.setOnPreferenceChangeListener(this);
+        mBatteryIcon.setValue(Integer.toString(Settings.System.getInt(getActivity()
+                .getContentResolver(), Settings.System.STATUSBAR_BATTERY_ICON, 0)));
 
         mBatteryBar = (ListPreference) prefSet.findPreference(PREF_BATT_BAR);
         mBatteryBar.setOnPreferenceChangeListener(this);
@@ -236,11 +238,7 @@ public class Toolbar extends SettingsPreferenceFragment
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference == mCircleBattery) {
-            Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.STATUS_BAR_CIRCLE_BATTERY, mCircleBattery.isChecked()
-                    ? 1 : 0);
-        } else if (preference == mBatteryBarChargingAnimation) {
+        if (preference == mBatteryBarChargingAnimation) {
 
             Settings.System.putInt(mContext.getContentResolver(),
                     Settings.System.STATUSBAR_BATTERY_BAR_ANIMATE,
@@ -403,6 +401,11 @@ public class Toolbar extends SettingsPreferenceFragment
             return Settings.System.putInt(mContentRes,
                     Settings.System.STATUSBAR_BATTERY_BAR_THICKNESS, val);
 
+        } else if (preference == mBatteryIcon) {
+
+            int val = Integer.parseInt((String) newValue);
+            return Settings.System.putInt(mContentRes,
+                    Settings.System.STATUSBAR_BATTERY_ICON, val);
         }
         return false;
     }

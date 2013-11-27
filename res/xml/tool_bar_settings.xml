@@ -92,9 +92,11 @@
         android:key="battery_bar_cat"
         android:title="@string/battery_bar_cat">
 
-        <CheckBoxPreference
-            android:key="circle_battery"
-            android:title="@string/circle_battery_title" />
+        <ListPreference
+            android:key="battery_icon_list"
+            android:title="@string/battery_icon"
+            android:entries="@array/battery_icon_entries"
+            android:entryValues="@array/battery_icon_values" />
 
         <ListPreference
             android:key="battery_bar_list"
