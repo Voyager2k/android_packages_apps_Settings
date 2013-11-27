@@ -626,6 +626,14 @@ public class Utils {
         return ExtendedPropertiesUtils.isTablet();
     }
 
+    public static boolean isPhablet(){
+        return ExtendedPropertiesUtils.isPhablet();
+    }
+
+    public static boolean isPhone(){
+        return ExtendedPropertiesUtils.isPhone();
+    }
+
     public static boolean hasNavigationBar() {
         int value;
         String prop = ExtendedPropertiesUtils.
