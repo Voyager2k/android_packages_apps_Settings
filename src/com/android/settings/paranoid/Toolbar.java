@@ -285,12 +285,22 @@ public class Toolbar extends SettingsPreferenceFragment
                     Settings.System.STATUSBAR_CLOCK_STYLE, clockStyle);
             mClockStyle.setSummary(mClockStyle.getEntries()[index]);
             if (clockStyle == 0) {
-                mClockAmPmstyle.setEnabled(false);
                 mClockDateDisplay.setEnabled(false);
                 mClockDateStyle.setEnabled(false);
                 mClockDateFormat.setEnabled(false);
+                mClockAmPmstyle.setEnabled(false);
             } else {
+                try {
+                if (Settings.System.getInt(getActivity().getContentResolver(),
+                    Settings.System.TIME_12_24) != 12) {
+                mClockAmPmstyle.setEnabled(false);
+                mClockAmPmstyle.setSummary(R.string.status_bar_am_pm_info);
+                } else {
                 mClockAmPmstyle.setEnabled(true);
+                }
+                } catch (SettingNotFoundException e) {
+                  // This will hurt you, run away
+                }
                 mClockDateDisplay.setEnabled(true);
                 mClockDateStyle.setEnabled(true);
                 mClockDateFormat.setEnabled(true);
