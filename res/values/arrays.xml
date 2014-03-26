@@ -588,11 +588,7 @@
 
     <!-- Names of categories of app ops tabs -->
     <string-array name="app_ops_categories">
-        <item>Location</item>
-        <item>Personal</item>
-        <item>Messaging</item>
-        <item>Media</item>
-        <item>Device</item>
+        <item>Operations</item>
     </string-array>
 
     <!-- User display names for app ops codes -->
@@ -1177,9 +1173,9 @@
 
     <!-- Display settings.  Entries for each type of Subscription. -->
     <string-array name="multi_sim_entries">
-        <item> Subscription 1 </item>
-        <item> Subscription 2 </item>
-        <item> Subscription 3 </item>
+        <item>Subscription 1</item>
+        <item>Subscription 2</item>
+        <item>Subscription 3</item>
     </string-array>
 
 </resources>
