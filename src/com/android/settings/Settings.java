@@ -359,6 +359,7 @@ public class Settings extends PreferenceActivity
         HomeSettings.class.getName(),
         ApnSettings.class.getName(),
         KeyboardLayoutPickerFragment.class.getName(),
+        com.koushikdutta.superuser.PolicyNativeFragment.class.getName(),
         ThemeSettings.class.getName()
     };
 
