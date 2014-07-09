@@ -102,6 +102,7 @@ import com.android.settings.location.LocationSettings;
 import com.android.settings.net.MobileDataEnabler;
 import com.android.settings.nfc.AndroidBeam;
 import com.android.settings.nfc.PaymentSettings;
+import com.android.settings.PALP.LegacyParts;
 import com.android.settings.print.PrintJobSettingsFragment;
 import com.android.settings.print.PrintServiceSettingsFragment;
 import com.android.settings.print.PrintSettingsFragment;
@@ -479,7 +480,8 @@ public class Settings extends PreferenceActivity
         ApnSettings.class.getName(),
         KeyboardLayoutPickerFragment.class.getName(),
         com.koushikdutta.superuser.PolicyNativeFragment.class.getName(),
-        ThemeSettings.class.getName()
+        ThemeSettings.class.getName(),
+        LegacyParts.class.getName()
     };
 
     @Override
@@ -681,6 +683,15 @@ public class Settings extends PreferenceActivity
                 catch (NameNotFoundException e){
                     target.remove(header);  // Package does not exist. Remove entry.
                 }
+            } else if (id == R.id.xperia_settings) {
+                try{
+                    // Set localized title of advanced settings
+                    header.title = getPackageManager().getApplicationLabel(getPackageManager()
+                            .getPackageInfo("com.cyanogenmod.settings.device", PackageManager.GET_META_DATA).applicationInfo);
+                }
+                catch (NameNotFoundException e){
+                    target.remove(header);  // Package does not exist. Remove entry.
+                }
             } else if (id == R.id.wifi_settings) {
                 // Remove WiFi Settings if WiFi service is not available.
                 if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI)) {
@@ -739,10 +750,6 @@ public class Settings extends PreferenceActivity
                     }
                 }
             } else if (id == R.id.development_settings) {
-                if (!showDev) {
-                    target.remove(i);
-                }
-            } else if (id == R.id.performance_settings) {
                 if (!showDev) {
                     target.remove(i);
                 }
